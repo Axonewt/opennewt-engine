@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  opennewt:
+    build: .
+    container_name: opennewt-engine
+    ports:
+      - "8088:8088"   # REST API
+      - "9010:9010"   # MCP Server (SSE)
+    volumes:
+      - opennewt-data:/app/data
+      - opennewt-logs:/app/logs
+    environment:
+      - PYTHONUNBUFFERED=1
+      # Uncomment to enable API key auth:
+      # - OPENNEWT_API_KEY=your-secret-key
+      # Uncomment for external LLM:
+      # - OPENAI_API_KEY=sk-xxx
+      # - DEEPSEEK_API_KEY=sk-xxx
+    command: >
+      sh -c "python api_server.py --port 8088 &
+             python -m src.mcp --transport sse --port 9010 &
+             wait"
+    restart: unless-stopped
+
+volumes:
+  opennewt-data:
+  opennewt-logs:

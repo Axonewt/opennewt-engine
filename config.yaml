@@ -1,0 +1,70 @@
+# OpenNewt Engine Configuration
+
+project:
+  name: "OpenNewt"
+  version: "0.3.0"
+  # 项目路径由启动脚本自动检测，不再硬编码
+
+agents:
+  soma:
+    enabled: true
+    scan_interval: 30       # 秒（原15分钟太长，开发阶段缩短）
+    health_threshold: 0.7
+    
+  plasticus:
+    enabled: true
+    min_plans: 3
+    max_plans: 5
+    
+  effector:
+    enabled: true
+    auto_rollback: true
+    health_threshold: 0.85
+    
+  mnemosyne:
+    enabled: true
+    db_path: "data/opennewt.db"
+
+llm:
+  # Provider: "ollama" (本地GPU) | "workbuddy" (云端AI，需安装 codebuddy CLI)
+  provider: "ollama"
+  model: "glm-4.7-flash:latest"
+  base_url: "http://127.0.0.1:11434"
+  max_cost_per_day: 0.0
+  # WorkBuddy 配置（仅 provider=workbuddy 时生效）
+  workbuddy:
+    cli_path: null          # codebuddy CLI 路径（null=自动查找PATH）
+    timeout: 120             # 命令超时秒数
+    max_turns: 5             # Agent 最大轮次
+    auto_approve: true       # 自动批准文件操作
+
+# Bridge 模式：Axonewt ↔ 外部 AI Agent（WorkBuddy/Axiom）桥接
+# 当 bridge.enabled=true 时，Axonewt 不走本地 LLM，而是通过文件系统与外部 Agent 通信
+# 外部 Agent 通过 WorkBuddy Automation 定时扫描 bridge/trigger.json 执行修复
+bridge:
+  enabled: false              # 设为 true 启用 Bridge 模式
+  timeout: 300                # 等待外部 Agent 修复的超时秒数（默认5分钟）
+  # 注意：启用 bridge 后，plasticus 的 LLM provider 设置将被忽略
+
+# Phase 3 REST API 配置
+api:
+  host: "127.0.0.1"
+  port: 5055
+  # 外部 LLM API Keys（环境变量优先）
+  openai:
+    base_url: null          # 自定义 OpenAI 兼容端点
+  deepseek:
+    base_url: "https://api.deepseek.com/v1"
+
+database:
+  type: "sqlite"
+  path: "data/opennewt.db"
+
+logging:
+  level: "INFO"
+  file: "logs/opennewt.log"
+  console: true
+
+monitoring:
+  tick_interval: 30        # 主循环间隔（秒）
+  health_check_interval: 300  # 健康检查间隔（秒）

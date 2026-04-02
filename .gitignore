@@ -1,0 +1,51 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+*.egg
+.eggs/
+
+# Virtual environment
+venv/
+.venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Data & logs (persisted separately)
+data/*.db
+data/*.db-journal
+data/cost_tracking/
+data/llm_cache/
+logs/
+
+# Environment
+.env
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Chaos testing artifacts
+src/.chaos/
+
+# WorkBuddy / bridge temp files
+bridge/trigger.json
+bridge/result.json
+bridge/status.json
+.codebuddy/
+.opennewt/
+.workbuddy/
+
+# Tests
+tests/self_heal/
